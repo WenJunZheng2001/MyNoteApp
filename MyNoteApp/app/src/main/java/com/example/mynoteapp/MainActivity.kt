@@ -43,12 +43,19 @@ import androidx.navigation.toRoute
 import com.example.mynoteapp.models.NoteData
 import com.example.mynoteapp.routes.DetailScreenRoute
 import com.example.mynoteapp.routes.HomeScreenRoute
+import com.example.mynoteapp.services.NoteRepository
 import com.example.mynoteapp.ui.theme.MyNoteAppTheme
 import com.example.mynoteapp.viewModels.NoteViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var testRepo: NoteRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        testRepo.test()
         enableEdgeToEdge()
         setContent {
             MyNoteAppTheme {
