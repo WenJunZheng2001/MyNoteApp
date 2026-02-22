@@ -2,6 +2,7 @@ package com.example.mynoteapp.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mynoteapp.commons.DetailScreenType
 import com.example.mynoteapp.models.NoteData
 import com.example.mynoteapp.roomDatabase.NoteEntity
 import com.example.mynoteapp.services.NoteRepository
@@ -19,8 +20,11 @@ import javax.inject.Inject
 class NoteViewModel @Inject constructor(val noteRepository: NoteRepository) : ViewModel() {
     private val _newNoteState = MutableStateFlow(NoteData(-1, "", ""))
     val newNoteState: StateFlow<NoteData> = _newNoteState.asStateFlow()
+
+    private val _editNoteState = MutableStateFlow(NoteData(-1, "", ""))
+    val editNoteState: StateFlow<NoteData> = _editNoteState.asStateFlow()
     val notes: StateFlow<List<NoteData>> =
-        noteRepository.getNotes()
+        noteRepository.getAll()
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
@@ -28,18 +32,62 @@ class NoteViewModel @Inject constructor(val noteRepository: NoteRepository) : Vi
             )
 
 
-    fun updateNewNote(title: String? = null, description: String? = null){
-        _newNoteState.update {
-            it.copy(
-                title = title ?: it.title,
-                description = description ?: it.description)
+    fun updateLocalNote(actionType: DetailScreenType, title: String? = null, description: String? = null){
+        when(actionType){
+            DetailScreenType.CREATE_NOTE -> {
+                _newNoteState.update {
+                    it.copy(
+                        title = title ?: it.title,
+                        description = description ?: it.description)
+                }
+            }
+            DetailScreenType.EDIT_NOTE -> {
+                _editNoteState.update {
+                    it.copy(
+                        title = title ?: it.title,
+                        description = description ?: it.description)
+                }
+            }
         }
+    }
+
+    fun initializeEditNote(id: Int){
+        val note = notes.value.find { it.id == id }
+        println(note?.title)
+        if(note != null) {
+            _editNoteState.update {
+                it.copy(
+                    id = note.id,
+                    title = note.title,
+                    description = note.description
+                )
+            }
+        }
+    }
+
+    fun deleteNote(id: Int): Boolean{
+        val note = notes.value.find { it.id == id }
+        if(note == null){
+            return false
+        }else{
+            viewModelScope.launch {
+                noteRepository.delete(note)
+            }
+            return true
+        }
+    }
+
+    fun editNote(): Boolean{
+        return true;
     }
 
     fun createNote(): Boolean{
         try {
+            if(newNoteState.value.title.isNullOrEmpty()){
+                return false
+            }
             val scope = viewModelScope.launch {
-                noteRepository.insertNote(NoteEntity(
+                noteRepository.insert(NoteEntity(
                     title = newNoteState.value.title,
                     description =  newNoteState.value.description))
             }

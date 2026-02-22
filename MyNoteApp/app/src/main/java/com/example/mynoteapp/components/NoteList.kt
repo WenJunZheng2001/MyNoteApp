@@ -38,17 +38,22 @@ fun ListOfNotes(navController: NavController,  modifier: Modifier = Modifier, vi
                     .fillMaxWidth()
                     .padding(1.dp)
                     .clickable{
+                        viewModel.initializeEditNote(it.id)
                         navController.navigate(DetailScreenRoute( it.id, DetailScreenType.EDIT_NOTE))
                     }) {
                 Row() {
                     Text(it.title, modifier = Modifier.padding(10.dp))
                     Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate(DetailScreenRoute(it.id, DetailScreenType.EDIT_NOTE))
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit",)
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        viewModel.deleteNote(it.id)
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete",)

@@ -10,15 +10,19 @@ import javax.inject.Inject
 class NoteRepository @Inject constructor(
     val noteDatabase: NoteDatabase
 ) {
-    fun getNotes(): Flow<List<NoteData>> {
+    fun getAll(): Flow<List<NoteData>> {
         return noteDatabase
             .noteDao()
             .getAll()
             .map { list -> list.map { it.toData() } }
     }
 
-    suspend fun insertNote(note: NoteEntity){
+    suspend fun insert(note: NoteEntity){
         noteDatabase.noteDao().insertAll(note)
+    }
+
+    suspend fun delete(note: NoteData){
+        noteDatabase.noteDao().delete(note.toEntity())
     }
 
     fun NoteEntity.toData(): NoteData {

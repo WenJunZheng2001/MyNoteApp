@@ -27,8 +27,12 @@ import com.example.mynoteapp.viewModels.NoteViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewModel, screenType: DetailScreenType) {
-    val noteInfo: NoteData? = if(id != null) viewModel.getModelById(id) else
+    val note: NoteData = if(id != null){
+        viewModel.editNoteState.collectAsState().value
+    }else{
         viewModel.newNoteState.collectAsState().value
+    }
+    println(note.title)
     val appTitle = if(screenType == DetailScreenType.CREATE_NOTE) "New Note" else "Edit Note"
     Scaffold(
         topBar = {
@@ -46,10 +50,16 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
                 },
                 actions = {
                     IconButton(onClick = {
-                        if(screenType == DetailScreenType.CREATE_NOTE){
-                            val isSuccess = viewModel.createNote()
-                            if(isSuccess) navController.navigateUp()
+                        when(screenType){
+                            DetailScreenType.CREATE_NOTE -> {
+                                val isSuccess = viewModel.createNote()
+                                if(isSuccess) navController.navigateUp()
+                            }
+                            DetailScreenType.EDIT_NOTE -> {
+                                val isSuccess = viewModel.editNote()
+                            }
                         }
+
                     }) {
                         Icon(imageVector = Icons.Default.Done, contentDescription = "Save note")
                     } }
@@ -59,20 +69,35 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
             modifier = Modifier.padding(innerPadding)){
             item {
                 TextField(
-                    value = noteInfo?.title ?: "",
+                    value = note.title,
                     label = {Text("Title")},
                     onValueChange = {
-                        viewModel.updateNewNote(title = it)
+                        when(screenType){
+                            DetailScreenType.CREATE_NOTE ->{
+                                viewModel.updateLocalNote(screenType, title = it)
+                            }
+                            DetailScreenType.EDIT_NOTE -> {
+                                viewModel.updateLocalNote(screenType, title = it)
+                            }
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             item{
                 TextField(
-                    value = noteInfo?.description ?: "",
+                    value = note.description ?: "",
                     label = {Text("Description")},
                     onValueChange = {
-                        viewModel.updateNewNote(description = it)
+                        when(screenType){
+                            DetailScreenType.CREATE_NOTE ->{
+                                viewModel.updateLocalNote(screenType, description = it)
+                            }
+                            DetailScreenType.EDIT_NOTE -> {
+                                viewModel.updateLocalNote(screenType, description = it)
+                                println("editing")
+                            }
+                        }
                     },
                     modifier = Modifier.fillMaxSize()
                 )
