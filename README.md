@@ -7,3 +7,5 @@ Inizialmente nato come semplice esercitazione sulla creazione di app Android nat
 
 L'app è un semplice Note che ha alcune funzionalità come la creazione di note con titolo e descrizione, edit di una nota e l'eliminazione di una nota.
 
+Schermata principale:
+<img src="./HomeScreen.jpg">
