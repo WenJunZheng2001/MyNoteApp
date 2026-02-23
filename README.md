@@ -11,7 +11,7 @@ Schermata principale:
 
 <img src="./HomeScreen.jpg" alt="Home Screen" width="40%" height="40%">
 
-Schermata di dettaglie:
+Schermata di dettagli0:
 
 <img src="./DetailScreen.jpg" alt="Detail Screen" width="40%" height="40%">
 
