@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mynoteapp.commons.DetailScreenType
@@ -42,15 +43,10 @@ fun ListOfNotes(navController: NavController,  modifier: Modifier = Modifier, vi
                         navController.navigate(DetailScreenRoute( it.id, DetailScreenType.EDIT_NOTE))
                     }) {
                 Row() {
-                    Text(it.title, modifier = Modifier.padding(10.dp))
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {
-                        navController.navigate(DetailScreenRoute(it.id, DetailScreenType.EDIT_NOTE))
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",)
-                    }
+                    Text(it.title,
+                        modifier = Modifier.padding(10.dp).weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis)
                     IconButton(onClick = {
                         viewModel.deleteNote(it.id)
                     }) {

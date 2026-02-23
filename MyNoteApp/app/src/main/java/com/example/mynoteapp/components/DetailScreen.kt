@@ -1,5 +1,6 @@
 package com.example.mynoteapp.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -57,6 +58,7 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
                             }
                             DetailScreenType.EDIT_NOTE -> {
                                 val isSuccess = viewModel.editNote()
+                                if(isSuccess) navController.navigateUp()
                             }
                         }
 
@@ -65,9 +67,8 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
                     } }
             )},
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding)){
-            item {
+        Column(
+            modifier = Modifier.padding(innerPadding).fillMaxSize()){
                 TextField(
                     value = note.title,
                     label = {Text("Title")},
@@ -83,8 +84,6 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-            item{
                 TextField(
                     value = note.description ?: "",
                     label = {Text("Description")},
@@ -99,9 +98,10 @@ fun DetailScreen(navController: NavController, id: Int?, viewModel: NoteViewMode
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxWidth().weight(1f),
+                    maxLines = Int.MAX_VALUE
                 )
-            }
         }
     }
 }
