@@ -78,7 +78,22 @@ class NoteViewModel @Inject constructor(val noteRepository: NoteRepository) : Vi
     }
 
     fun editNote(): Boolean{
-        return true;
+        try {
+            val editNote = editNoteState.value
+            if(editNote.title.isNullOrEmpty()){
+                return false
+            }
+            viewModelScope.launch {
+                noteRepository.update(NoteData(
+                    _editNoteState.value.id,
+                    _editNoteState.value.title,
+                    _editNoteState.value.description))
+            }
+
+            return  true;
+        }catch (e: Exception){
+            return false
+        }
     }
 
     fun createNote(): Boolean{
@@ -101,7 +116,6 @@ class NoteViewModel @Inject constructor(val noteRepository: NoteRepository) : Vi
         }catch (e: Exception){
             return false
         }
-
     }
 
     fun getModelById(id:Int): NoteData?{

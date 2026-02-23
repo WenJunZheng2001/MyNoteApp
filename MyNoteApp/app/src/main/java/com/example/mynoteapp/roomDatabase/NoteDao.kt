@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,8 +20,11 @@ interface NoteDao {
 //    fun findByName(first: String, last: String): NoteEntity
 
     @Insert
-    suspend fun insertAll(vararg users: NoteEntity)
+    suspend fun insertAll(vararg note: NoteEntity)
+
+    @Update
+    suspend fun update(note: NoteEntity)
 
     @Delete
-    suspend fun delete(user: NoteEntity)
+    suspend fun delete(note: NoteEntity)
 }

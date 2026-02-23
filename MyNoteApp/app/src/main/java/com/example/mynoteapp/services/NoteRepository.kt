@@ -25,6 +25,10 @@ class NoteRepository @Inject constructor(
         noteDatabase.noteDao().delete(note.toEntity())
     }
 
+    suspend fun update(note: NoteData){
+        noteDatabase.noteDao().update(note.toEntity())
+    }
+
     fun NoteEntity.toData(): NoteData {
         return NoteData(
             id = uid,
